@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
 require 'json/ext'
 require 'puma'
 require 'rack/content_type'
@@ -76,15 +75,7 @@ class Application # rubocop:disable Style/Documentation
     [200, {}, [result]]
   end
 
-  # def headers
-  #   { 'content-type' => 'application/json',
-  #     'charset' => 'UTF-8'
-  #   }
-  # end
-
   def user_create(params)
-    # binding.pry
-
     return [400, {}, [{ errors: [status: 400, message: JsonValidation.errors(params)] }.to_json]] unless JsonValidation.call(params)
 
     user = User.new(params)

@@ -1,18 +1,6 @@
 ---
 version: "3.8"
 services:
-  # mongo_db:
-  #   container_name: ${COMPOSE_PROJECT_NAME:-green_atom}-mongo
-  #   image: mongo:latest
-  #   restart: unless-stopped
-  #   volumes:
-  #     - mongo_data:/data/db
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: example
-  #   ports:
-  #     - 27017:27017/tcp
-
   db:
     container_name: ${COMPOSE_PROJECT_NAME:-green_atom}-pgsql
     image: postgres:15
@@ -32,7 +20,6 @@ services:
     build: .
     command: bundle exec rackup --host 0.0.0.0 -p 9292 config.ru
     depends_on:
-      # - mongo_db
       - db
     ports:
       - 9292:9292/tcp
@@ -40,5 +27,4 @@ services:
       DOCKER_ENV: true
 
 volumes:
-  # mongo_data:
   pg_data:

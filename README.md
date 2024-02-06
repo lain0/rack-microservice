@@ -1,34 +1,36 @@
 
-# ToDo
-[x] README
-[x] how to run
-[ ] tests
-[X] get/post endpoints
-[X] db vs validations
-[X] validate json schema
-[ ] auth
-[X] docker-compose
+# Rack microservice
+
+## ToDo
+- [x] README
+- [x] how to run
+- [ ] how to test
+- [X] get/post endpoints
+- [X] db validations
+- [X] json schema validate
+- [ ] auth
+- [X] docker-compose
 
 
 ## how to run locally:
-```sh
+```ruby
 rake rack:up
 
 # run with webrick server:
 RACKUP_HANDLER=webrick rake rack:up
 ```
 ## how to run in docker:
-```sh
+```ruby
 rake docker:up
 ```
 
 ## run tests locally:
-```sh
+```ruby
 rake test:rspec
 rake test:post:fail test:post:json_fail
 ```
 
 ## run tests in docker:
-```sh
+```ruby
 rake docker:rspec
 ```
