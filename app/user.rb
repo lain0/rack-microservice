@@ -9,9 +9,9 @@ class User < Sequel::Model
 
   def validate
     super
-    validates_presence [:name, :email, :age], message: 'was not given'
+    validates_presence %i[name email age], message: 'was not given'
     errors.add(:name, 'cannot be empty') if !name || name.empty?
-    validates_type String, [:name, :email]
+    validates_type String, %i[name email]
     validates_type Integer, :age
     validates_unique(:name, :email)
   end

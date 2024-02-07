@@ -9,24 +9,27 @@ require_relative 'db'
 require_relative 'user'
 require_relative 'json_validation'
 
-class Application # rubocop:disable Style/Documentation
+class Application
   def call(env)
-    rack_input = env['rack.input'].read
-    params = rack_input.empty? ? false : JSON.parse(rack_input)
-    handle(env['REQUEST_METHOD'], env['PATH_INFO'], params)
+    req_method = env['REQUEST_METHOD']
+    path = env['PATH_INFO']
+    case req_method
+    when 'GET'
+      get(path)
+    when 'POST'
+      rack_input = env['rack.input'].read
+      params = rack_input.empty? ? {} : JSON.parse(rack_input)
+      if JsonValidation.call(params)
+        post(path, params)
+      else
+        wrong_params(params)
+      end
+    else
+      method_not_allowed(req_method)
+    end
   end
 
   private
-
-  def handle(method, path, params)
-    if method == 'GET'
-      get(path)
-    elsif method == 'POST' && params
-      post(path, params)
-    else
-      method_not_allowed(method)
-    end
-  end
 
   def get(path)
     case path
@@ -58,12 +61,12 @@ class Application # rubocop:disable Style/Documentation
     end
   end
 
-  def method_not_allowed(method)
-    [405, {}, [{ errors: [status: 405, message: "Method not allowed: #{method}"]}.to_json]]
+  def method_not_allowed(req_method)
+    [405, {}, [{ errors: [status: 405, message: "Method not allowed: #{req_method}"] }.to_json]]
   end
 
   def not_found(path)
-    [404, {}, [{ errors: [status: 404, source: path.to_s ]}.to_json]]
+    [404, {}, [{ errors: [status: 404, source: path.to_s] }.to_json]]
   end
 
   def id(path)
@@ -71,17 +74,19 @@ class Application # rubocop:disable Style/Documentation
   end
 
   def render(data, hash = {})
-    result = { data: data }.merge(hash).to_json
+    result = { data: }.merge(hash).to_json
     [200, {}, [result]]
   end
 
-  def user_create(params)
-    return [400, {}, [{ errors: [status: 400, message: JsonValidation.errors(params)] }.to_json]] unless JsonValidation.call(params)
+  def wrong_params(params)
+    [400, {}, [{ errors: [status: 400, message: JsonValidation.errors(params)] }.to_json]]
+  end
 
+  def user_create(params)
     user = User.new(params)
     if user.valid? && user.errors.empty?
       data = user.save
-      [201, {}, [{ data: data, source: "/users/#{data.id}" }.to_json]]
+      [201, {}, [{ data:, source: "/users/#{data.id}" }.to_json]]
     else
       [422, {}, [{ errors: [status: 422, message: user.errors] }.to_json]]
     end

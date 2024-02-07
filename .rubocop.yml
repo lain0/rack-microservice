@@ -1,0 +1,23 @@
+# inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-performance
+  - rubocop-rspec
+
+Metrics/MethodLength:
+  Max: 18
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/RegexpLiteral:
+  Enabled: false
+
+AllCops:
+  TargetRubyVersion: 3.3.x
+  NewCops: enable
+  # Exclude:
+  #   - 'Rakefile'

@@ -55,6 +55,12 @@ namespace :test do
       sh "curl -X POST -H 'content-type: application/json' -d \'#{data.to_json}\' http://localhost:9292/users/create"
     end
 
+    desc 'curl post empty'
+    task :empty do
+      data = {}
+      sh "curl -X POST -H 'content-type: application/json' http://localhost:9292/users/create"
+    end
+
     desc 'curl post fail'
     task :fail do
       data = { name: 'New User', age: 30, email: 'new@user.ru' }
